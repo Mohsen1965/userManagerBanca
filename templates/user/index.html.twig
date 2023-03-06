@@ -1,0 +1,94 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    <h1>User index</h1>
+<div class="d-flex justify-content-between align-items-center">
+    <a class="btn btn-primary mr-2" href="{{ path('app_user_new') }}"><i class="fa fa-plus mr-1" aria-hidden="true"></i>Add User</a>
+    <form method="Get" action="{{ path('app_user_search') }}" class="form-inline my-2 my-lg-0 mr-2">
+        <input type="text" name="query" class="form-control mr-sm-2" placeholder="Search for users...">
+        <button type="submit" class="btn btn-primary my-2 my-sm-0">Search</button>
+    </form>
+    <form method="post" action="{{ path('user_pdf') }}" class="mr-2">
+        <button type="submit" class="btn btn-primary"><i class="fa fa-file-pdf-o mr-1" aria-hidden="true"></i> PDF</button>
+    </form>
+    <form>
+        <a class="btn btn-warning" href="{{ path('app_logout') }}">Logout</a>
+    </form>
+</div>
+
+<br>
+
+<table id="user-table" class="table">
+       <thead class="table-primary">
+            <tr>
+                <th>{{ knp_pagination_sortable(users, 'ID', 'id') }}</th>
+                <th>{{ knp_pagination_sortable(users, 'Username', 'username') }}</th>
+                <th>{{ knp_pagination_sortable(users, 'Email', 'email') }}</th>
+                                <th>Password</th>
+                <th>{{ knp_pagination_sortable(users, 'isActive', 'isActive') }}</th>
+                <th>{{ knp_pagination_sortable(users, 'Role', 'role') }}</th>
+               {# <th>CreatedAt</th> #}
+                {# <th>UpdatedAt</th> #}
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.password }}</td>
+               <td>
+                    <form method="post" action="{{ path('update_active', {'id': user.id}) }}" class="update-form">
+                        <input type="hidden" name="_method" value="POST">
+                        <input type="hidden" name="active" value="{{ user.isActive ? 0 : 1 }}">
+                        <button type="submit" class="btn {% if user.isActive %}btn-success{% else %}btn-danger{% endif %}">{% if user.isActive %}Active{% else %}Inactive{% endif %}</button>
+                    </form>
+                </td>
+
+                <td>
+                    {% for role in user.role %}
+                        {{ role.nom }}
+                    {% endfor %}
+                </td>
+                {# <td>{{ user.created_at }}</td> #}
+            {# <td>{{ user.updated_at }}</td> #}
+                <td>
+
+                    <a class="btn btn-primary" href="{{ path('app_user_show', {'id': user.id}) }}"><i class="fa fa-eye" aria-hidden="true"></i> Show</a>
+                    <a  class="btn btn-warning" href="{{ path('app_user_edit', {'id': user.id}) }}"><i class="fa fa-pencil fa-fw"></i> Edit</a>
+                    <form method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" style="display:
+                    inline-block" onsubmit="return confirm('Êtes vous vraiment sûr ?')">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                        <button class="btn btn-danger""><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+                    </form>
+                </td>
+            </tr>
+            
+
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+            
+        {% endfor %}
+        </tbody>
+    </table>
+
+<!-- pagination -->
+    <div style="display: flex; justify-content: center;">
+        {{ knp_pagination_render(users) }}
+    </div>
+
+
+<script>
+
+
+
+
+
+</script>
+{% endblock %}

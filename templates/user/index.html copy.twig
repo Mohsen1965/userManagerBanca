@@ -1,0 +1,86 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}User index{% endblock %}
+
+{% block body %}
+    <h1>User index</h1>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Password</th>
+                <th>IsActive</th>
+                <th>Role</th>
+                <th>actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for user in users %}
+            <tr>
+                <td>{{ user.id }}</td>
+                <td>{{ user.username }}</td>
+                <td>{{ user.email }}</td>
+                <td>{{ user.password }}</td>
+                <td>
+                    <form method="post" action="{{ path('update_active', {'id': user.id}) }}">
+                        <input type="hidden" name="_method" value="PATCH">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="active_{{ user.id }}" name="active" {% if user.isActive %}checked{% endif %}>
+                            <label class="form-check-label" for="active_{{ user.id }}">Active</label>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
+                </td>
+                
+                <td>
+                    {% for role in user.role %}
+                        {{ role.nom }}
+                    {% endfor %}
+                </td>
+                <td>
+
+                    <a class="btn btn-success" href="{{ path('app_user_show', {'id': user.id}) }}"><i class="fa fa-eye" aria-hidden="true"></i> Show</a>
+                    <a  class="btn btn-warning" href="{{ path('app_user_edit', {'id': user.id}) }}"><i class="fa fa-pencil fa-fw"></i> Edit</a>
+                    <form method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" style="display:
+                    inline-block" onsubmit="return confirm('Êtes vous vraiment sûr ?')">
+                        <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+                        <button class="btn btn-danger""><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+                    </form>
+                </td>
+            </tr>
+        {% else %}
+            <tr>
+                <td colspan="6">no records found</td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+
+    <a href="{{ path('app_user_new') }}">Create new</a>
+
+    <script>
+$(document).ready(function() {
+    $('input[type="checkbox"]').change(function() {
+        var isActive = $(this).prop('checked');
+        var userId = $(this).data('user-id');
+        
+        $.ajax({
+            url: '/user/update-active/' + userId,
+            type: 'POST',
+            data: { active: isActive },
+            success: function(response) {
+                if (response.success) {
+                    window.location.href = "{{ path('app_user_index') }}";                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Error updating user active status:', error);
+            }
+        });
+    });
+});
+
+    </script>
+{% endblock %}
