@@ -63,4 +63,25 @@ class RoleRepository extends ServiceEntityRepository
 //            ->getOneOrNullResult()
 //        ;
 //    }
+
+
+public function findOneBySomeNom($query): array
+{
+    return $this->createQueryBuilder('u')
+    ->andWhere('u.nom LIKE :query')
+    ->setParameter('query', '%'.$query.'%') 
+    ->getQuery()
+    ->getResult();
+    //->getOneOrNullResult();
+}
+
+
+
+public function sort(string $field, string $direction): array
+{
+$qb = $this->createQueryBuilder('u');
+$qb->orderBy('u.'.$field, $direction);
+
+return $qb->getQuery()->getResult();
+}
 }

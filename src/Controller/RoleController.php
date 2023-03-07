@@ -79,4 +79,37 @@ class RoleController extends AbstractController
 {
     return $this->nom;
 }
+
+/**
+     * @Route("/search", name="app_role_search", methods={"GET"})
+     */
+
+//#[Route('/search', name: 'app_role_search', methods: ['GET'])]
+public function findOneBySomeNom(Request $request, RoleRepository $roleRepository, PaginatorInterface $paginator): Response
+{
+    $query = $request->query->get('query');
+if (!$query) {
+    // handle case where query parameter is missing
+}
+
+$sort = $request->query->get('sort', 'role'); // default sort by username
+$direction = $request->query->get('direction', 'asc'); // default sort direction is ascending
+    
+$roles = $userRepository->findOneBySomeNom($query, $sort, $direction);
+    
+// Paginate the results using the KnpPaginatorBundle
+$pagination = $paginator->paginate(
+    $roles,
+    $request->query->getInt('page', 1),
+    3 // Items per page
+);
+
+return $this->render('role/index.html.twig', [
+    'roles' => $pagination,
+    'sort' => $sort,
+    'direction' => $direction, // add the "direction" variable to the view
+]);
+}
+
+
 }
