@@ -3,9 +3,13 @@
 {% block title %}New Role{% endblock %}
 
 {% block body %}
+<div class="full-screen-container" style=" margin-left: 300px;margin-right: 30px;">
+<div class="full-screen-container">
+        <h1 class="bold-red-text">Role index</h1>
+</div>
     <h1>Create new Role</h1>
 
     {{ include('role/_form.html.twig') }}
-
-    <a href="{{ path('app_role_index') }}">back to list</a>
+<br>
+   <a class="btn btn-warning" href="{{ path('app_role_index') }}"><i class="fa fa-home" aria-hidden="true"></i> back to list</a>
 {% endblock %}

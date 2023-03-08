@@ -3,11 +3,19 @@
 {% block title %}Edit User{% endblock %}
 
 {% block body %}
+<div class="full-screen-container" style=" margin-left: 300px;margin-right: 30px;">
+<div class="full-screen-container">
+        <h1 class="bold-red-text">Role index</h1>
+</div>
     <h1>Edit User</h1>
 
     {{ include('user/_form.html.twig', {'button_label': 'Update'}) }}
+<br>
+<a class="btn btn-warning" href="{{ path('app_user_index') }}"><i class="fa fa-home" aria-hidden="true"></i> back to list</a>
 
-    <a href="{{ path('app_user_index') }}">back to list</a>
-
-    {{ include('user/_delete_form.html.twig') }}
+   <form method="post" action="{{ path('app_user_delete', {'id': user.id}) }}" style="display:
+        inline-block" onsubmit="return confirm('Êtes vous vraiment sûr ?')">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ user.id) }}">
+            <button class="btn btn-danger"><i class="fa fa-trash" aria-hidden="true"></i> Delete</button>
+        </form>
 {% endblock %}

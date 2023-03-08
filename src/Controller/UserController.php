@@ -13,6 +13,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Knp\Component\Pager\PaginatorInterface;
 use Knp\Bundle\PaginatorBundle\Pagination\SlidingPaginationInterface;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Dompdf\Dompdf;
 
 #[Route('/user')]
@@ -88,17 +89,15 @@ public function index(UserRepository $userRepository, PaginatorInterface $pagina
     }
 
     #[Route('/{id}', name: 'app_user_delete', methods: ['POST'])]
-public function delete(Request $request, User $user, UserRepository $userRepository, UserPasswordEncoderInterface $passwordEncoder): Response
-{
-    if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
-        $userPassword = $user->getPassword();
-        $encodedPassword = $passwordEncoder->encodePassword($user, $userPassword);
-        $user->setPassword($encodedPassword);
-        $userRepository->remove($user, true);
-    }
+    public function delete(Request $request, User $user, UserRepository $userRepository): Response
+    {
+        if ($this->isCsrfTokenValid('delete'.$user->getId(), $request->request->get('_token'))) {
+            $userRepository->remove($user, true);
+        }
 
-    return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
-}
+        return $this->redirectToRoute('app_user_index', [], Response::HTTP_SEE_OTHER);
+    }
+    
 
 
 /**
