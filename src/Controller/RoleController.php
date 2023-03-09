@@ -98,7 +98,7 @@ class RoleController extends AbstractController
 }
 
 /**
-     * @Route("/role/search", name="app_role_search")
+     * @Route("/search", name="app_role_search")
      */
 //#[Route('/search', name: 'app_role_search')]
 public function searchRole(Request $request, RoleRepository $roleRepository)
